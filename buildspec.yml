@@ -7,6 +7,9 @@ phases:
       - AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
       - ECR_URI=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
       - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $ECR_URI
+      - echo Preparing CodeDeploy scripts...
+      - sed -i 's/\r$//' scripts/*.sh
+      - chmod +x scripts/*.sh
 
   build:
     commands:
@@ -19,3 +22,8 @@ phases:
       - echo Pushing Docker image to Amazon ECR...
       - docker push $ECR_URI/aws-devops-app:latest
       - echo Build completed on `date`
+
+artifacts:
+  files:
+    - appspec.yml
+    - scripts/**/*
