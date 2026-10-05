@@ -21,7 +21,9 @@ phases:
     commands:
       - echo Pushing Docker image to Amazon ECR...
       - docker push $ECR_URI/aws-devops-app:latest
-      - echo Build completed on `date`
+      - echo Creating CodeDeploy deployment...
+      - aws deploy create-deployment --application-name aws-devops-cicd-app --deployment-group-name aws-devops-production --s3-location bucket=aws-devops-codedeploy-artifacts-170871290790,key=aws-devops-codedeploy-artifact,bundleType=zip
+      - echo Build and deployment trigger completed on `date`
 
 artifacts:
   files:
